@@ -19,6 +19,7 @@ oc new-project $PROD_PROJECT --display-name="${GUID} AdvDev Homework Parks Produ
 
 oc policy add-role-to-user edit system:serviceaccount:$GUID-jenkins:jenkins -n ${PROD_PROJECT}
 oc policy add-role-to-user admin system:serviceaccount:$GUID-jenkins:jenkins -n ${PROD_PROJECT}
+oc policy add-role-to-group system:image-puller system:serviceaccounts:${PROD_PROJECT} -n ${DEV_PROJECT}
 
 echo "Creating internal mongo service.."
 oc create -f ../templates/mongodb-service-internal-template.yml 
