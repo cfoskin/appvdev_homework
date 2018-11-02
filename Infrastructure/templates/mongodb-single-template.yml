@@ -98,7 +98,7 @@ objects:
               secretKeyRef:
                 key: database-name
                 name: "mongodb"
-          image: "registry.access.redhat.com/rhscl/mongodb-34-rhel7:latest"
+          image: "centos/mongodb-32-centos7"
           imagePullPolicy: IfNotPresent
           livenessProbe:
             initialDelaySeconds: 30
@@ -142,18 +142,18 @@ parameters:
 - description: Username for MongoDB user that will be used for accessing the database.
   displayName: MongoDB Connection Username
   name: MONGODB_USER
-  value: user
+  value: mongodb
   required: true
 - description: Password for the MongoDB connection user.
   displayName: MongoDB Connection Password
   name: MONGODB_PASSWORD
-  value: pass
+  value: mongodb
   required: true
 - description: Name of the MongoDB database accessed.
   displayName: MongoDB Database Name
   name: MONGODB_DATABASE
   required: true
-  value: mydb
+  value: parks
 - description: Password for the database admin user.
   displayName: MongoDB Admin Password
   from: "[a-zA-Z0-9]{16}"
