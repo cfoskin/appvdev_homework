@@ -66,3 +66,12 @@ echo "Update the DeploymentConfig to use the configmaps.. "
 oc set env dc/mlbparks --from=configmap/mlbparks-config 
 oc set env dc/nationalparks --from=configmap/nationalparks-config
 oc set env dc/parksmap --from=configmap/parksmap-config
+
+oc expose dc/mlbparks  --port 8080 -n $DEV_PROJECT
+oc expose dc/nationalparks  --port 8080 -n $DEV_PROJECT
+oc expose dc/parksmap  --port 8080 -n $DEV_PROJECT
+
+oc label svc/mlbparks type=parksmap-backend
+oc label svc/nationalparks type=parksmap-backend
+
+

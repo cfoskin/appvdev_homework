@@ -97,4 +97,23 @@ oc set env dc/mlbparks-green --from=configmap/mlbparks-config
 oc set env dc/nationalparks-green --from=configmap/nationalparks-config
 oc set env dc/parksmap-green --from=configmap/parksmap-config
 
+
+echo "Creating services for green.."
+oc expose dc/mlbparks-green  --port 8080 -n $PROD_PROJECT
+oc expose dc/nationalparks-green  --port 8080 -n $PROD_PROJECT
+oc expose dc/parksmap-green  --port 8080 -n $PROD_PROJECT
+
+echo "Creating services for blue.."
+oc expose dc/mlbparks-blue  --port 8080 -n $PROD_PROJECT
+oc expose dc/nationalparks-blue  --port 8080 -n $PROD_PROJECT
+oc expose dc/parksmap-blue  --port 8080 -n $PROD_PROJECT
+
+echo "label the backend services"
+oc label svc/mlbparks-green type=parksmap-backend -n $PROD_PROJECT
+oc label svc/nationalparks-green type=parksmap-backend -n $PROD_PROJECT
+
+echo "label the backend services"
+oc label svc/mlbparks-blue type=parksmap-backend -n $PROD_PROJECT
+oc label svc/nationalparks-blue type=parksmap-backend -n $PROD_PROJECT
+
 echo "Finished!"
