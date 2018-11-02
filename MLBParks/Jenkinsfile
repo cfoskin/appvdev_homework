@@ -1,28 +1,69 @@
-// Jenkinsfile for MLBParks
-podTemplate(
-  label: "skopeo-pod",
-  cloud: "openshift",
-  inheritFrom: "maven",
-  containers: [
-    containerTemplate(
-      name: "jnlp",
-      image: "docker-registry.default.svc:5000/${GUID}-jenkins/jenkins-slave-appdev",
-      resourceRequestMemory: "1Gi",
-      resourceLimitMemory: "2Gi"
-    )
-  ]
-) {
-  node('skopeo-pod') {
+ node('maven-appdev') {
+    echo "TEST:::"
+    GUID='e05e'
+    CLUSTER='https://master.na39.openshift.opentlc.com'
     echo "GUID: ${GUID}"
     echo "CLUSTER: ${CLUSTER}"
 
+    def groupId    = getGroupIdFromPom("pom.xml")
+    def artifactId = getArtifactIdFromPom("pom.xml")
+    def version    = getVersionFromPom("pom.xml")
+    // Set the tag for the development image: version + build number
+    def devTag  = "${version}-${BUILD_NUMBER}"
+    // Set the tag for the production image: version
+    def prodTag = "${version}"
+
+    // Checkout Source Code.
+    stage('Checkout Source') {
+      git url: 'https://github.com/cfoskin/appvdev_homework.git'
+    }
+
+    def mvnCmd = "mvn -s ./nexus_settings.xml"
+    echo "mvnCmd: ${mvnCmd}"
+
+    // Using Maven build the war file
+    stage('Build war') {
+      echo "Building version ${devTag}"
+      sh "${mvnCmd} clean package -DskipTests"
+    }
+
+    // Using Maven run the unit tests
+    stage('Unit Tests') {
+      echo "Running Unit Tests"
+      sh "${mvnCmd} test"
+    }
+
+    // stage('Code Analysis') {
+    //   echo "Running Code Analysis"
+    //   sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://MYSONARURL -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"
+    // }
+
+    // Build the OpenShift Image in OpenShift and tag it.
+    stage('Build and Tag OpenShift Image') {
+      echo "Building OpenShift container image tasks:${devTag}"
+
+      // Start Binary Build in OpenShift using the file we just published
+      // The filename is openshift-tasks.war in the 'target' directory of your current
+      // Jenkins workspace
+      // Replace xyz-tasks-dev with the name of your dev project
+      sh "oc start-build mlbparks --follow --from-file=./target/mlbparks.war -n $GUID-mlbparlks-dev"
+
+      // OR use the file you just published into Nexus:
+      // sh "oc start-build tasks --follow --from-file=http://nexus3.xyz-nexus.svc.cluster.local:8081/repository/releases/org/jboss/quickstarts/eap/tasks/${version}/tasks-${version}.war -n xyz-tasks-dev"
+      // Tag the image using the devTag
+      openshiftTag alias: 'false', destStream: 'mlbparks', destTag: devTag, destinationNamespace: '$GUID-mlbparlks-dev', namespace: '$GUID-mlbparlks-dev', srcStream: 'mlbparks', srcTag: 'latest', verbose: 'false'
+    }
+
+    stage('Publish to Nexus') {
+      echo "Publish to Nexus"
+      sh "${mvnCmd} deploy -DskipTests=true -DaltDeploymentRepository=nexus::default::http://nexus3-e05e-nexus.apps.na39.openshift.opentlc.com:8081/repository/releases"
+    }
     // Your Pipeline Code goes here. Make sure to use the ${GUID} and ${CLUSTER} parameters where appropriate
     // You need to build the application in directory `MLBParks`.
     // Also copy "../nexus_settings.xml" to your build directory
     // and replace 'GUID' in the file with your ${GUID} to point to >your< Nexus instance
  
   }
-}
 
 // Convenience Functions to read variables from the pom.xml
 // Do not change anything below this line.

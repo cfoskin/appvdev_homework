@@ -30,7 +30,7 @@ objects:
         <alwaysPullImage>false</alwaysPullImage>
         <instanceCap>2147483647</instanceCap>
         <idleMinutes>10</idleMinutes>
-        <label>maven-slave</label>
+        <label>maven-appdev</label>
         <serviceAccount>jenkins</serviceAccount>
         <nodeSelector></nodeSelector>
         <customWorkspaceVolumeEnabled>false</customWorkspaceVolumeEnabled>
