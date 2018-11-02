@@ -8,6 +8,8 @@ fi
 
 GUID=$1
 PROD_PROJECT=$GUID-parks-prod
+DEV_PROJECT=$GUID-parks-dev
+
 echo "Setting up Parks Production Environment in project ${PROD_PROJECT}"
 
 # Code to set up the parks development project.
@@ -48,4 +50,50 @@ echo "Mongodb Deployment complete"
 # # Code to set up the parks production project. It will need a StatefulSet MongoDB, and two applications each (Blue/Green) for NationalParks, MLBParks and Parksmap.
 # # The Green services/routes need to be active initially to guarantee a successful grading pipeline run.
 
-# To be Implemented by Student
+echo "Creating Blue Deployment Configs.."
+oc new-app $DEV_PROJECT/mlbparks:0.0 --name=mlbparks-blue --allow-missing-imagestream-tags=true -n $PROD_PROJECT
+oc new-app $DEV_PROJECT/nationalparks:0.0 --name=nationalparks-blue --allow-missing-imagestream-tags=true -n $PROD_PROJECT
+oc new-app $DEV_PROJECT/parksmap:0.0 --name=parksmap-blue --allow-missing-imagestream-tags=true -n $PROD_PROJECT
+
+echo "Setting Blue triggers.."
+oc set triggers dc/mlbparks-blue --remove-all -n $PROD_PROJECT
+oc set triggers dc/nationalparks-blue --remove-all -n $PROD_PROJECT
+oc set triggers dc/parksmap-blue --remove-all -n $PROD_PROJECT
+
+echo "Creating Green Deployment Configs.."
+oc new-app $DEV_PROJECT/mlbparks:0.0 --name=mlbparks-green --allow-missing-imagestream-tags=true -n $PROD_PROJECT
+oc new-app $DEV_PROJECT/nationalparks:0.0 --name=nationalparks-green --allow-missing-imagestream-tags=true -n $PROD_PROJECT
+oc new-app $DEV_PROJECT/parksmap:0.0 --name=parksmap-green --allow-missing-imagestream-tags=true -n $PROD_PROJECT
+
+echo "Setting Green triggers.."
+oc set triggers dc/mlbparks-green --remove-all -n $PROD_PROJECT
+oc set triggers dc/nationalparks-green --remove-all -n $PROD_PROJECT
+oc set triggers dc/parksmap-green --remove-all -n $PROD_PROJECT
+
+echo "Create Configmaps.."
+oc create configmap mlbparks-config --from-literal="DB_HOST=mongodb " --from-literal="DB_PORT=27017" \
+ --from-literal="DB_USERNAME=mongodb" --from-literal="DB_PASSWORD=mongodb" \
+ --from-literal="DB_NAME=parks" --from-literal="DB_REPLICASET=rs0" \
+ --from-literal="APPNAME=MLB Parks (Blue)" -n $PROD_PROJECT
+
+oc create configmap nationalparks-config --from-literal="DB_HOST=mongodb " --from-literal="DB_PORT=27017" \
+ --from-literal="DB_USERNAME=mongodb" --from-literal="DB_PASSWORD=mongodb" \
+ --from-literal="DB_NAME=parks" --from-literal="DB_REPLICASET=rs0" \
+ --from-literal="APPNAME=National Parks (Blue)" -n $PROD_PROJECT
+
+oc create configmap parksmap-config --from-literal="DB_HOST=mongodb " --from-literal="DB_PORT=27017" \
+ --from-literal="DB_USERNAME=mongodb" --from-literal="DB_PASSWORD=mongodb" \
+ --from-literal="DB_NAME=parks" --from-literal="DB_REPLICASET=rs0" \
+ --from-literal="APPNAME=ParksMap (Blue)" -n $PROD_PROJECT
+
+echo "Update the DeploymentConfig to use the configmaps.. "
+oc set env dc/mlbparks-blue --from=configmap/mlbparks-config 
+oc set env dc/nationalparks-blue --from=configmap/nationalparks-config
+oc set env dc/parksmap-blue --from=configmap/parksmap-config
+
+echo "Update the DeploymentConfig to use the configmaps.. "
+oc set env dc/mlbparks-green --from=configmap/mlbparks-config 
+oc set env dc/nationalparks-green --from=configmap/nationalparks-config
+oc set env dc/parksmap-green --from=configmap/parksmap-config
+
+echo "Finished!"
