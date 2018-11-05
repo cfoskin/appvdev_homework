@@ -90,9 +90,13 @@
         echo "Checking health endpoint"
         sh "curl -i -H 'Content-Length: 0' -X GET http://parksmap.e05e-parks-dev.svc:8080/ws/healthz/"
 
-        // checking info endpoint
-        echo "Checking info endpoint"
-        sh "curl -i -H 'Content-Length: 0' -X GET http://parksmap.e05e-parks-dev.svc:8080/ws/info/"
+        // checking backends endpoint
+        echo "Checking backends endpoint"
+        sh "curl -i -H 'Content-Length: 0' -X GET http://parksmap.e05e-parks-dev.svc:8080/ws/backends/list/"
+
+        // checking app names endpoint
+        echo "Checking app names endpoint"
+        sh "curl -i -H 'Content-Length: 0' -X GET http://parksmap.e05e-parks-dev.svc:8080/ws/appname/"
       }
 
       // Copy Image to Nexus Docker Registry
