@@ -1,5 +1,4 @@
  node('maven-appdev') {
-    echo "TEST:::"
     GUID='e05e'
     CLUSTER='https://master.na39.openshift.opentlc.com'
     echo "GUID: ${GUID}"
@@ -47,7 +46,7 @@
 
       // Build the OpenShift Image in OpenShift and tag it.
       stage('Build and Tag OpenShift Image') {
-        echo "Building OpenShift container image tasks:${devTag}"
+        echo "Building OpenShift container image mlbparks:${devTag}"
         // Start Binary Build in OpenShift using the file we just published
         // The filename is openshift-tasks.war in the 'target' directory of your current
         // Jenkins workspace
@@ -82,31 +81,33 @@
         openshiftVerifyDeployment depCfg: 'mlbparks', namespace: 'e05e-parks-dev', replicaCount: '1', verbose: 'false', verifyReplicaCount: 'false', waitTime: '', waitUnit: 'sec'
         openshiftVerifyService namespace: 'e05e-parks-dev', svcName: 'mlbparks', verbose: 'false'
       }
-//       // Run Integration Tests in the Development Environment.
-//       stage('Integration Tests') {
-//         echo "Running Integration Tests"
-//         sleep 15
+      // Run Integration Tests in the Development Environment.
+      stage('Integration Tests') {
+        echo "Running Integration Tests"
+        sleep 30
 
-//         // Create a new task called "integration_test_1"
-//         echo "Creating task"
-//         sh "curl -i -u 'tasks:redhat1' -H 'Content-Length: 0' -X POST http://tasks.xyz-tasks-dev.svc.cluster.local:8080/ws/tasks/integration_test_1"
+        //check health endpoint
+        echo "Checking health endpoint"
+        sh "curl -i -H 'Content-Length: 0' -X GET http://mlbparks.e05e-parks-dev.svc:8080/ws/healthz/"
 
-//         // Retrieve task with id "1"
-//         echo "Retrieving tasks"
-//         sh "curl -i -u 'tasks:redhat1' -H 'Content-Length: 0' -X GET http://tasks.xyz-tasks-dev.svc.cluster.local:8080/ws/tasks/1"
+        // checking info endpoint
+        echo "Checking info endpoint"
+        sh "curl -i -H 'Content-Length: 0' -X GET http://mlbparks.e05e-parks-dev.svc:8080/ws/info/"
+      }
 
-//         // Delete task with id "1"
-//         echo "Deleting tasks"
-//         sh "curl -i -u 'tasks:redhat1' -H 'Content-Length: 0' -X DELETE http://tasks.xyz-tasks-dev.svc.cluster.local:8080/ws/tasks/1"
-// }
-      // Your Pipeline Code goes here. Make sure to use the ${GUID} and ${CLUSTER} parameters where appropriate
-      // You need to build the application in directory `MLBParks`.
-      // Also copy "../nexus_settings.xml" to your build directory
-      // and replace 'GUID' in the file with your ${GUID} to point to >your< Nexus instance
+      // Copy Image to Nexus Docker Registry
+      stage('Copy Image to Nexus Docker Registry') {
+        echo "Copy image to Nexus Docker Registry"
+        sh "skopeo copy --src-tls-verify=false --dest-tls-verify=false --src-creds openshift:\$(oc whoami -t) --dest-creds admin:admin123 docker://docker-registry.default.svc.cluster.local:5000/${GUID}-parks-dev/mlbparks:${devTag} docker://nexus-registry.${GUID}-nexus.svc.cluster.local:5000/mlbparks:${devTag}"
+
+        // Tag the built image with the production tag.
+        // Replace xyz-tasks-dev with the name of your dev project
+        openshiftTag alias: 'false', destStream: 'mlbparks', destTag: prodTag, destinationNamespace: 'e05e-parks-dev', namespace: 'e05e-parks-dev', srcStream: 'mlbparks', srcTag: devTag, verbose: 'false'
+      }
    }
   }
 
-// Convenience Functions to read variables from the pom.xml
+// Convenience Functions to read variables from the pom.xml. 
 // Do not change anything below this line.
 def getVersionFromPom(pom) {
   def matcher = readFile(pom) =~ '<version>(.+)</version>'

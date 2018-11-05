@@ -76,10 +76,5 @@ echo "Creating labels for backend"
 oc label svc/mlbparks type=parksmap-backend -n $DEV_PROJECT
 oc label svc/nationalparks type=parksmap-backend -n $DEV_PROJECT
 
-echo "Create routes for services"
-oc expose svc/mlbparks -n $DEV_PROJECT
-oc expose svc/nationalparks -n $DEV_PROJECT
-oc expose svc/parksMap -n $DEV_PROJECT
-
 
 
