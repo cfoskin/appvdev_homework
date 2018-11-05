@@ -30,7 +30,6 @@ oc process -f ../templates/nexus-template.yml | oc create -f -
 echo "Waiting for Nexus to deploy..."
 sleep 60
 
-http_code=""
 while : ; do
   echo "Checking if Nexus is Ready..."
   http_code=$(curl -s -o /dev/null -w "%{http_code}" http://$(oc get route nexus3 --template='{{ .spec.host }}')/repository/maven-public/)
