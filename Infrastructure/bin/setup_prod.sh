@@ -20,6 +20,7 @@ oc new-project $PROD_PROJECT --display-name="${GUID} AdvDev Homework Parks Produ
 oc policy add-role-to-user edit system:serviceaccount:$GUID-jenkins:jenkins -n ${PROD_PROJECT}
 oc policy add-role-to-user admin system:serviceaccount:$GUID-jenkins:jenkins -n ${PROD_PROJECT}
 oc policy add-role-to-group system:image-puller system:serviceaccounts:${PROD_PROJECT} -n ${DEV_PROJECT}
+oc policy add-role-to-user view system:serviceaccount:default -n ${PROD_PROJECT}
 
 echo "Creating internal mongo service.."
 oc create -f ../templates/mongodb-service-internal-template.yml 
@@ -93,9 +94,9 @@ oc set env dc/nationalparks-blue --from=configmap/nationalparks-config
 oc set env dc/parksmap-blue --from=configmap/parksmap-config
 
 echo "Update the DeploymentConfig to use the configmaps.. "
-oc set env dc/mlbparks-green --from=configmap/mlbparks-config 
-oc set env dc/nationalparks-green --from=configmap/nationalparks-config
-oc set env dc/parksmap-green --from=configmap/parksmap-config
+oc set env dc/mlbparks-green --from=configmap/mlbparks-config -n $PROD_PROJECT
+oc set env dc/nationalparks-green --from=configmap/nationalparks-config -n $PROD_PROJECT
+oc set env dc/parksmap-green --from=configmap/parksmap-config -n $PROD_PROJECT
 
 
 echo "Creating services for green.."
