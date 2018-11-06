@@ -15,11 +15,12 @@ echo "Setting up Parks Development Environment in project ${GUID}-parks-dev"
 # Code to set up the parks development project.
 
 # To be Implemented by Student
-oc policy add-role-to-user edit system:serviceaccount:$GUID-jenkins:jenkins -n ${$DEV_PROJECT}
-oc policy add-role-to-user admin system:serviceaccount:$GUID-jenkins:jenkins -n  ${$DEV_PROJECT}
-oc policy add-role-to-user view system:serviceaccount:default -n  ${$DEV_PROJECT}
+oc policy add-role-to-user edit system:serviceaccount:$GUID-jenkins:jenkins -n ${DEV_PROJECT}
+oc policy add-role-to-user admin system:serviceaccount:$GUID-jenkins:jenkins -n  ${DEV_PROJECT}
+oc policy add-role-to-user view system:serviceaccount:default -n  ${DEV_PROJECT}
 oc policy add-role-to-group system:image-puller system:serviceaccounts:${PROD_PROJECT} -n ${DEV_PROJECT}
 
+oc project $DEV_PROJECT
 oc process -f ../templates/mongodb-single-template.yml | oc create -f -
 
 

@@ -15,21 +15,21 @@ echo "Setting up Parks Production Environment in project ${PROD_PROJECT}"
 # Code to set up the parks development project.
 
 # To be Implemented by Student
-oc new-project $PROD_PROJECT --display-name="${GUID} AdvDev Homework Parks Production"
-
 oc policy add-role-to-user edit system:serviceaccount:$GUID-jenkins:jenkins -n ${PROD_PROJECT}
 oc policy add-role-to-user admin system:serviceaccount:$GUID-jenkins:jenkins -n ${PROD_PROJECT}
 oc policy add-role-to-group system:image-puller system:serviceaccounts:${PROD_PROJECT} -n ${DEV_PROJECT}
 oc policy add-role-to-user view system:serviceaccount:default -n ${PROD_PROJECT}
 
+oc project $PROD_PROJECT 
+
 echo "Creating internal mongo service.."
-oc create -f ../templates/mongodb-service-internal-template.yml 
+oc create -f ../templates/mongodb-service-internal-template.yml -n ${PROD_PROJECT}
 
 echo "Creating mongo service.."
-oc create -f ../templates/mongodb-service-template.yml 
+oc create -f ../templates/mongodb-service-template.yml -n ${PROD_PROJECT}
 
 echo "Creating mongo StatefulSet.."
-oc create -f ../templates/mongodb-statefulset-template.yml 
+oc create -f ../templates/mongodb-statefulset-template.yml -n ${PROD_PROJECT}
 
 
 echo "Checking if Mongodb Stateful set is Ready..."
@@ -135,6 +135,6 @@ oc label svc/nationalparks-blue type=parksmap-backend -n $PROD_PROJECT
 echo "create routes for green service"
 oc expose svc/mlbparks-green --name mlbparks -n $PROD_PROJECT
 oc expose svc/nationalparks-green --name nationalparks -n $PROD_PROJECT  
-oc expose svc/parksMap-green --name parksmap -n $PROD_PROJECT 
+oc expose svc/parksmap-green --name parksmap -n $PROD_PROJECT 
 
 echo "Finished Setting up Production Apps!"

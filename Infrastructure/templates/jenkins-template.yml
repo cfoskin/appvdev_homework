@@ -74,21 +74,27 @@ objects:
               value: 'true'
           image: " "
           imagePullPolicy: IfNotPresent
-          # livenessProbe:
-          #   failureThreshold: 2
-          #   httpGet:
-          #     path: "/login"
-          #     port: 8080
-          #   initialDelaySeconds: 420
-          #   periodSeconds: 360
-          #   timeoutSeconds: 240
+          livenessProbe:
+            failureThreshold: 2
+            httpGet:
+              path: /login
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 420
+            periodSeconds: 360
+            successThreshold: 1
+            timeoutSeconds: 240
           name: jenkins
-          # readinessProbe:
-          #   httpGet:
-          #     path: "/login"
-          #     port: 8080
-          #   initialDelaySeconds: 3
-          #   timeoutSeconds: 240
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /login
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 240
           resources:
             limits:
               memory: 2Gi

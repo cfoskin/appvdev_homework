@@ -28,10 +28,6 @@ echo "Setting up Jenkins in project $JENKINS_PROJECT from Git Repo ${REPO} for C
 # * CLUSTER: the base url of the cluster used (e.g. na39.openshift.opentlc.com)
 
 # To be Implemented by Student
-
-oc new-project $JENKINS_PROJECT --display-name "Shared Jenkins"
-
-echo $JENKINS_PROJECT
 oc project $JENKINS_PROJECT
 
 oc process -f ../templates/jenkins-template.yml -p NAMESPACE=$JENKINS_PROJECT | oc create -f -
