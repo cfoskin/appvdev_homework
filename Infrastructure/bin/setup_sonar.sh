@@ -15,9 +15,6 @@ echo "Setting up Sonarqube in project $SONAR_PROJECT"
 # oc new-app -f ../templates/sonarqube.yaml --param .....
 
 # To be Implemented by Student
-
-oc new-project $SONAR_PROJECT --display-name "Shared Sonar"
-
 oc project $SONAR_PROJECT
 
 echo "Deploying Postgres..."

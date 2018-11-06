@@ -20,10 +20,6 @@ echo "Setting up Nexus in project $NEXUS_PROJECT"
 #       You could use the following code:
 
 # To be Implemented by Student
-
-oc new-project $NEXUS_PROJECT --display-name "Shared Nexus"
-
-echo $NEXUS_PROJECT
 oc project $NEXUS_PROJECT
 
 oc process -f ../templates/nexus-template.yml | oc create -f -
