@@ -46,3 +46,68 @@ echo "Configuring slave"
 oc new-app -f ../templates/jenkins-config.yml --param GUID=$GUID -n $JENKINS_PROJECT
 
 echo "Slave configured"
+
+
+echo 'apiVersion: v1
+items:
+- kind: "BuildConfig"
+  apiVersion: "v1"
+  metadata:
+    name: "mlbparks-pipeline"
+  spec:
+    source:
+      type: "Git"
+      git:
+        uri: "https://github.com/cfoskin/appvdev_homework.git"
+    strategy:
+      type: "JenkinsPipeline"
+      jenkinsPipelineStrategy:
+        jenkinsfilePath: ./MLBParks/Jenkinsfile
+kind: List
+metadata: []' | oc create -f - -n $JENKINS_PROJECT
+
+echo 'apiVersion: v1
+items:
+- kind: "BuildConfig"
+  apiVersion: "v1"
+  metadata:
+    name: "nationalparks-pipeline"
+  spec:
+    source:
+      type: "Git"
+      git:
+        uri: "https://github.com/cfoskin/appvdev_homework.git"
+    strategy:
+      type: "JenkinsPipeline"
+      jenkinsPipelineStrategy:
+        jenkinsfilePath: ./Nationalparks/Jenkinsfile
+kind: List
+metadata: []' | oc create -f - -n $JENKINS_PROJECT 
+
+echo 'apiVersion: v1
+items:
+- kind: "BuildConfig"
+  apiVersion: "v1"
+  metadata:
+    name: "parksmap-pipeline"
+  spec:
+    source:
+      type: "Git"
+      git:
+        uri: "https://github.com/cfoskin/appvdev_homework.git"
+    strategy:
+      type: "JenkinsPipeline"
+      jenkinsPipelineStrategy:
+        jenkinsfilePath: ./ParksMap/Jenkinsfile
+kind: List
+metadata: []' | oc create -f - -n $JENKINS_PROJECT
+
+echo "setting required envars for the build configs.."
+oc set env bc/mlbparks-pipeline GUID=$GUID CLUSTER=$CLUSTER -n $JENKINS_PROJECT
+oc set env bc/nationalparks-pipeline GUID=$GUID CLUSTER=$CLUSTER -n $JENKINS_PROJECT
+oc set env bc/parksmap-pipeline GUID=$GUID CLUSTER=$CLUSTER -n $JENKINS_PROJECT
+
+
+
+
+

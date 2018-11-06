@@ -33,6 +33,8 @@ objects:
     - ReadWriteOnce
     resources:
       requests:
+        cpu: 2
+        memory: 2Gi
         storage: "4Gi"
 - apiVersion: v1
   kind: DeploymentConfig
@@ -90,6 +92,7 @@ objects:
           resources:
             limits:
               memory: 2Gi
+              cpu: 3
           securityContext:
             capabilities: {}
             privileged: false
