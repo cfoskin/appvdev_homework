@@ -9,10 +9,6 @@
       git url: 'https://github.com/cfoskin/appvdev_homework.git'
     }
 
-    echo "directory: "
-    sh "pwd"
-    sh "ls"
-
     dir("Nationalparks") {
       def groupId    = getGroupIdFromPom("pom.xml")
       def artifactId = getArtifactIdFromPom("pom.xml")
