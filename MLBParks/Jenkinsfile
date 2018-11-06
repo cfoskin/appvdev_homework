@@ -119,7 +119,6 @@
         sh "oc project ${GUID}-parks-prod "
         sh 'oc patch route mlbparks -p \'{"spec":{"to":{"name":"' + destApp + '"}}}\''
       }
-
        }
   }
 
