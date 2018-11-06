@@ -8,6 +8,8 @@ fi
 
 GUID=$1
 DEV_PROJECT=$GUID-parks-dev
+PROD_PROJECT=$GUID-parks-prod
+
 echo "Setting up Parks Development Environment in project ${GUID}-parks-dev"
 
 # Code to set up the parks development project.
@@ -18,6 +20,7 @@ oc new-project $DEV_PROJECT --display-name="${GUID} AdvDev Homework Parks Develo
 oc policy add-role-to-user edit system:serviceaccount:$GUID-jenkins:jenkins -n ${$DEV_PROJECT}
 oc policy add-role-to-user admin system:serviceaccount:$GUID-jenkins:jenkins -n  ${$DEV_PROJECT}
 oc policy add-role-to-user view system:serviceaccount:default -n  ${$DEV_PROJECT}
+oc policy add-role-to-group system:image-puller system:serviceaccounts:${PROD_PROJECT} -n ${DEV_PROJECT}
 
 oc process -f ../templates/mongodb-single-template.yml | oc create -f -
 
