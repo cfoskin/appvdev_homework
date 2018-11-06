@@ -133,10 +133,10 @@
 
       stage('Switch over to new Version') {
         input "Switch Production?"
-
         echo "Switching Production application to ${destApp}."
+        sh "oc project ${GUID}-parks-prod "
         // Replace xyz-tasks-prod with the name of your production project
-        sh 'oc patch route mlbparks -n ${GUID}-parks-prod -p \'{"spec":{"to":{"name":"' + destApp + '"}}}\''
+        sh 'oc patch route mlbparks -p \'{"spec":{"to":{"name":"' + destApp + '"}}}\''
       }
 
        }
