@@ -9,10 +9,10 @@ fi
 GUID=$1
 NEXUS_PROJECT=${GUID}-nexus
 echo "Setting up Nexus in project $NEXUS_PROJECT"
-echo "***"
+echo "^^^"
 pwd
 ls
-echo "***"
+echo "^^^"
 # Code to set up the Nexus. It will need to
 # * Create Nexus
 # * Set the right options for the Nexus Deployment Config
@@ -24,7 +24,9 @@ echo "***"
 
 # To be Implemented by Student
 oc project $NEXUS_PROJECT
-
+"&&&"
+ls
+"&&&"
 oc process -f ../templates/nexus-template.yml | oc create -f -
 echo "Waiting for Nexus to deploy..."
 sleep 60
