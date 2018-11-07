@@ -24,9 +24,9 @@ echo "^^^"
 
 # To be Implemented by Student
 oc project $NEXUS_PROJECT
-"&&&"
+echo "&&&"
 ls
-"&&&"
+echo "&&&"
 oc process -f ../templates/nexus-template.yml | oc create -f -
 echo "Waiting for Nexus to deploy..."
 sleep 60
