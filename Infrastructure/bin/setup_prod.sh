@@ -132,7 +132,7 @@ echo "label the backend services"
 oc label svc/mlbparks-blue type=parksmap-backend -n $PROD_PROJECT
 oc label svc/nationalparks-blue type=parksmap-backend -n $PROD_PROJECT
 
-echo "create routes for green service"
+echo "create routes for blue service"
 oc expose svc/mlbparks-blue --name mlbparks -n $PROD_PROJECT
 oc expose svc/nationalparks-blue --name nationalparks -n $PROD_PROJECT  
 oc expose svc/parksmap-blue --name parksmap -n $PROD_PROJECT 
