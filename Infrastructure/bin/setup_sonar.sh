@@ -17,16 +17,12 @@ echo "Setting up Sonarqube in project $SONAR_PROJECT"
 # To be Implemented by Student
 oc project $SONAR_PROJECT
 
-"Current sonar script directory: " pwd
-
-"ls output: "  ls
-
 echo "Deploying Postgres..."
-oc process -f ../templates/postgres-template.yml | oc create -f -
+oc process -f ./Infrastructure/templates/postgres-template.yml | oc create -f - -n $SONAR_PROJECT
 
 while : ; do
   echo "Checking if Postgres is Ready..."
-  output=$(oc get pods --field-selector=status.phase='Running' | grep 'postgresql' | grep -v 'deploy' | grep '1/1' | awk '{print $2}')
+  output=$(oc get pods --field-selector=status.phase='Running' -n $SONAR_PROJECT| grep 'postgresql' | grep -v 'deploy' | grep '1/1' | awk '{print $2}')
   [[ "${output}" != "1/1" ]] || break #testing here
   echo "...no Sleeping 20 seconds."
   sleep 20
@@ -34,11 +30,11 @@ done
 echo "Postgresql Deployment complete"
 
 echo "Deploying Sonarqube..."
-oc process -f ../templates/sonar-template.yml | oc create -f -
+oc process -f ./Infrastructure/templates/sonar-template.yml | oc create -f - -n $SONAR_PROJECT
 
 while : ; do
   echo "Checking if Sonarqube is Ready..."
-  output=$(oc get pods --field-selector=status.phase='Running' | grep 'sonarqube' | grep -v 'deploy' | grep '1/1' | awk '{print $2}')
+  output=$(oc get pods --field-selector=status.phase='Running' -n $SONAR_PROJECT| grep 'sonarqube' | grep -v 'deploy' | grep '1/1' | awk '{print $2}')
   [[ "${output}" != "1/1" ]] || break #testing here
   echo "...no Sleeping 20 seconds."
   sleep 20

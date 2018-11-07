@@ -22,25 +22,21 @@ oc policy add-role-to-user view system:serviceaccount:default -n ${PROD_PROJECT}
 
 oc project $PROD_PROJECT 
 
-"Current prod script directory: " pwd
-
-"ls output: "  ls
-
 echo "Creating internal mongo service.."
-oc create -f ../templates/mongodb-service-internal-template.yml -n ${PROD_PROJECT}
+oc create -f ./Infrastructure/templates/mongodb-service-internal-template.yml -n ${PROD_PROJECT}
 
 echo "Creating mongo service.."
-oc create -f ../templates/mongodb-service-template.yml -n ${PROD_PROJECT}
+oc create -f ./Infrastructure/templates/mongodb-service-template.yml -n ${PROD_PROJECT}
 
 echo "Creating mongo StatefulSet.."
-oc create -f ../templates/mongodb-statefulset-template.yml -n ${PROD_PROJECT}
+oc create -f ./Infrastructure/templates/mongodb-statefulset-template.yml -n ${PROD_PROJECT}
 
 
 echo "Checking if Mongodb Stateful set is Ready..."
 check_if_ready () {
    while : ; do
    	 echo "Checking mongodb-$1 pod.."
-   	 output=$(oc get pods --field-selector=status.phase='Running' | grep 'mongodb-'$1 | grep '1/1' | awk '{print $2}')
+   	 output=$(oc get pods --field-selector=status.phase='Running' -n ${DEV_PROJECT}| grep 'mongodb-'$1 | grep '1/1' | awk '{print $2}')
    	 echo $output
 	 [[ "${output}" != "1/1" ]] || break #testing here
 	 echo "...no Sleeping 10 seconds."
@@ -109,9 +105,9 @@ oc create configmap parksmap-config-green --from-literal="DB_HOST=mongodb " --fr
  --from-literal="APPNAME=ParksMap (Green)" -n $PROD_PROJECT
 
 echo "Update the DeploymentConfig to use the configmaps.. "
-oc set env dc/mlbparks-blue --from=configmap/mlbparks-config-blue 
-oc set env dc/nationalparks-blue --from=configmap/nationalparks-config-blue
-oc set env dc/parksmap-blue --from=configmap/parksmap-config-blue
+oc set env dc/mlbparks-blue --from=configmap/mlbparks-config-blue -n ${PROD_PROJECT}
+oc set env dc/nationalparks-blue --from=configmap/nationalparks-config-blue -n ${PROD_PROJECT}
+oc set env dc/parksmap-blue --from=configmap/parksmap-config-blue -n ${PROD_PROJECT}
 
 echo "Update the DeploymentConfig to use the configmaps.. "
 oc set env dc/mlbparks-green --from=configmap/mlbparks-config-green -n $PROD_PROJECT

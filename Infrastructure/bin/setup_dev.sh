@@ -22,11 +22,7 @@ oc policy add-role-to-group system:image-puller system:serviceaccounts:${PROD_PR
 
 oc project $DEV_PROJECT
 
-"Current dev script directory: " pwd
-
-"ls output: "  ls
-
-oc process -f ../templates/mongodb-single-template.yml | oc create -f -
+oc process -f ./Infrastructure/templates/mongodb-single-template.yml | oc create -f - -n ${DEV_PROJECT}
 
 
 while : ; do

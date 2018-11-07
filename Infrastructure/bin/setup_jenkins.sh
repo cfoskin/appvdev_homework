@@ -30,11 +30,7 @@ echo "Setting up Jenkins in project $JENKINS_PROJECT from Git Repo ${REPO} for C
 # To be Implemented by Student
 oc project $JENKINS_PROJECT
 
-"Current jenkins script directory: " pwd
-
-"ls output: "  ls
-
-oc process -f ../templates/jenkins-template.yml -p NAMESPACE=$JENKINS_PROJECT | oc create -f -
+oc process -f ./Infrastructure/templates/jenkins-template.yml -p NAMESPACE=$JENKINS_PROJECT | oc create -f - -n $JENKINS_PROJECT
 
 echo "Building the slave"
 
@@ -43,7 +39,7 @@ sleep 120
 
 echo "Configuring slave"
 # configure kubernetes PodTemplate plugin.
-oc new-app -f ../templates/jenkins-config.yml --param GUID=$GUID -n $JENKINS_PROJECT
+oc new-app -f ./Infrastructure/templates/jenkins-config.yml --param GUID=$GUID -n $JENKINS_PROJECT
 
 echo "Slave configured"
 
