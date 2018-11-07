@@ -18,7 +18,7 @@ echo "Setting up Sonarqube in project $SONAR_PROJECT"
 oc project $SONAR_PROJECT
 
 echo "Deploying Postgres..."
-oc process -f ./Infrastructure/templates/postgres-template.yml | oc create -f - -n $SONAR_PROJECT
+oc process -f ../templates/postgres-template.yml | oc create -f - -n $SONAR_PROJECT
 
 while : ; do
   echo "Checking if Postgres is Ready..."
@@ -30,7 +30,7 @@ done
 echo "Postgresql Deployment complete"
 
 echo "Deploying Sonarqube..."
-oc process -f ./Infrastructure/templates/sonar-template.yml | oc create -f - -n $SONAR_PROJECT
+oc process -f ../templates/sonar-template.yml | oc create -f - -n $SONAR_PROJECT
 
 while : ; do
   echo "Checking if Sonarqube is Ready..."

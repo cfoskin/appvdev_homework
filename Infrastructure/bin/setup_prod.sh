@@ -23,20 +23,20 @@ oc policy add-role-to-user view system:serviceaccount:default -n ${PROD_PROJECT}
 oc project $PROD_PROJECT 
 
 echo "Creating internal mongo service.."
-oc create -f ./Infrastructure/templates/mongodb-service-internal-template.yml -n ${PROD_PROJECT}
+oc create -f ../templates/mongodb-service-internal-template.yml -n ${PROD_PROJECT}
 
 echo "Creating mongo service.."
-oc create -f ./Infrastructure/templates/mongodb-service-template.yml -n ${PROD_PROJECT}
+oc create -f ../templates/mongodb-service-template.yml -n ${PROD_PROJECT}
 
 echo "Creating mongo StatefulSet.."
-oc create -f ./Infrastructure/templates/mongodb-statefulset-template.yml -n ${PROD_PROJECT}
+oc create -f ../templates/mongodb-statefulset-template.yml -n ${PROD_PROJECT}
 
 
 echo "Checking if Mongodb Stateful set is Ready..."
 check_if_ready () {
    while : ; do
    	 echo "Checking mongodb-$1 pod.."
-   	 output=$(oc get pods --field-selector=status.phase='Running' -n ${DEV_PROJECT}| grep 'mongodb-'$1 | grep '1/1' | awk '{print $2}')
+   	 output=$(oc get pods --field-selector=status.phase='Running'| grep 'mongodb-'$1 | grep '1/1' | awk '{print $2}')
    	 echo $output
 	 [[ "${output}" != "1/1" ]] || break #testing here
 	 echo "...no Sleeping 10 seconds."
@@ -133,8 +133,8 @@ oc label svc/mlbparks-blue type=parksmap-backend -n $PROD_PROJECT
 oc label svc/nationalparks-blue type=parksmap-backend -n $PROD_PROJECT
 
 echo "create routes for green service"
-oc expose svc/mlbparks-green --name mlbparks -n $PROD_PROJECT
-oc expose svc/nationalparks-green --name nationalparks -n $PROD_PROJECT  
-oc expose svc/parksmap-green --name parksmap -n $PROD_PROJECT 
+oc expose svc/mlbparks-blue --name mlbparks -n $PROD_PROJECT
+oc expose svc/nationalparks-blue --name nationalparks -n $PROD_PROJECT  
+oc expose svc/parksmap-blue --name parksmap -n $PROD_PROJECT 
 
 echo "Finished Setting up Production Apps!"
