@@ -21,6 +21,11 @@ oc policy add-role-to-user view system:serviceaccount:default -n  ${DEV_PROJECT}
 oc policy add-role-to-group system:image-puller system:serviceaccounts:${PROD_PROJECT} -n ${DEV_PROJECT}
 
 oc project $DEV_PROJECT
+
+"Current dev script directory: " pwd
+
+"ls output: "  ls
+
 oc process -f ../templates/mongodb-single-template.yml | oc create -f -
 
 

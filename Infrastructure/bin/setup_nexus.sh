@@ -22,6 +22,10 @@ echo "Setting up Nexus in project $NEXUS_PROJECT"
 # To be Implemented by Student
 oc project $NEXUS_PROJECT
 
+"Current nexus script directory: " pwd
+
+"ls output: "  ls
+
 oc process -f ../templates/nexus-template.yml | oc create -f -
 echo "Waiting for Nexus to deploy..."
 sleep 60

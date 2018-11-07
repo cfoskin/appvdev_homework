@@ -17,6 +17,10 @@ echo "Setting up Sonarqube in project $SONAR_PROJECT"
 # To be Implemented by Student
 oc project $SONAR_PROJECT
 
+"Current sonar script directory: " pwd
+
+"ls output: "  ls
+
 echo "Deploying Postgres..."
 oc process -f ../templates/postgres-template.yml | oc create -f -
 

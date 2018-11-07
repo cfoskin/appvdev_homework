@@ -22,6 +22,10 @@ oc policy add-role-to-user view system:serviceaccount:default -n ${PROD_PROJECT}
 
 oc project $PROD_PROJECT 
 
+"Current prod script directory: " pwd
+
+"ls output: "  ls
+
 echo "Creating internal mongo service.."
 oc create -f ../templates/mongodb-service-internal-template.yml -n ${PROD_PROJECT}
 

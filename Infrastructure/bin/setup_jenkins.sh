@@ -30,6 +30,10 @@ echo "Setting up Jenkins in project $JENKINS_PROJECT from Git Repo ${REPO} for C
 # To be Implemented by Student
 oc project $JENKINS_PROJECT
 
+"Current jenkins script directory: " pwd
+
+"ls output: "  ls
+
 oc process -f ../templates/jenkins-template.yml -p NAMESPACE=$JENKINS_PROJECT | oc create -f -
 
 echo "Building the slave"
