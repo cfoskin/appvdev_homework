@@ -42,5 +42,5 @@ chmod +x setup_nexus3.sh
 ./setup_nexus3.sh admin admin123 http://$(oc get route nexus3 --template='{{ .spec.host }}' -n $NEXUS_PROJECT)
 rm setup_nexus3.sh
 
-oc annotate route nexus3 console.alpha.openshift.io/overview-app-route=true 
-oc annotate route nexus-registry console.alpha.openshift.io/overview-app-route=false
+oc annotate route nexus3 console.alpha.openshift.io/overview-app-route=true  -n $NEXUS_PROJECT
+oc annotate route nexus-registry console.alpha.openshift.io/overview-app-route=false -n $NEXUS_PROJECT
