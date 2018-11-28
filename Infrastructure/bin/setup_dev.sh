@@ -22,10 +22,11 @@ oc policy add-role-to-group system:image-puller system:serviceaccounts:${PROD_PR
 
 oc project $DEV_PROJECT
 
-oc process -f ../templates/mongodb-single-template.yml | oc create -f - -n ${DEV_PROJECT}
+oc process -f ./Infrastructure/templates/mongodb-single-template.yml | oc create -f - -n ${DEV_PROJECT}
 
 
 while : ; do
+  oc project ${DEV_PROJECT}
   echo "Checking if Mongodb is Ready..."
   output=$(oc get pods --field-selector=status.phase='Running' | grep 'mongodb' | grep -v 'deploy' | grep '1/1' | awk '{print $2}')
   [[ "${output}" != "1/1" ]] || break #testing here

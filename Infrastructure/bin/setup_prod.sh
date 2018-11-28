@@ -23,18 +23,19 @@ oc policy add-role-to-user view system:serviceaccount:default -n ${PROD_PROJECT}
 oc project $PROD_PROJECT 
 
 echo "Creating internal mongo service.."
-oc create -f ../templates/mongodb-service-internal-template.yml -n ${PROD_PROJECT}
+oc create -f ./Infrastructure/templates/mongodb-service-internal-template.yml -n ${PROD_PROJECT}
 
 echo "Creating mongo service.."
-oc create -f ../templates/mongodb-service-template.yml -n ${PROD_PROJECT}
+oc create -f ./Infrastructure/templates/mongodb-service-template.yml -n ${PROD_PROJECT}
 
 echo "Creating mongo StatefulSet.."
-oc create -f ../templates/mongodb-statefulset-template.yml -n ${PROD_PROJECT}
+oc create -f ./Infrastructure/templates/mongodb-statefulset-template.yml -n ${PROD_PROJECT}
 
 
 echo "Checking if Mongodb Stateful set is Ready..."
 check_if_ready () {
    while : ; do
+     oc project $PROD_PROJECT
    	 echo "Checking mongodb-$1 pod.."
    	 output=$(oc get pods --field-selector=status.phase='Running'| grep 'mongodb-'$1 | grep '1/1' | awk '{print $2}')
    	 echo $output

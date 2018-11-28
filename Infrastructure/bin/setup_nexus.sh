@@ -21,11 +21,12 @@ echo "Setting up Nexus in project $NEXUS_PROJECT"
 # To be Implemented by Student
 oc project $NEXUS_PROJECT
 
-oc process -f ../templates/nexus-template.yml | oc create -f - -n $NEXUS_PROJECT 
+oc process -f ./Infrastructure/templates/nexus-template.yml | oc create -f - -n $NEXUS_PROJECT 
 echo "Waiting for Nexus to deploy..."
 sleep 60
 
 while : ; do
+  oc project $NEXUS_PROJECT
   echo "Checking if Nexus is Ready..."
   http_code=$(curl -s -o /dev/null -w "%{http_code}" http://$(oc get route nexus3 --template='{{ .spec.host }}')/repository/maven-public/)
   echo "HTTP code returned is: " $http_code
