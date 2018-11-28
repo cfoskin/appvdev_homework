@@ -68,9 +68,9 @@ oc create configmap parksmap-config --from-literal="DB_HOST=mongodb " --from-lit
  --from-literal="APPNAME=ParksMap (Green)" -n $DEV_PROJECT
 
 echo "Update the DeploymentConfig to use the configmaps.. "
-oc set env dc/mlbparks --from=configmap/mlbparks-config 
-oc set env dc/nationalparks --from=configmap/nationalparks-config
-oc set env dc/parksmap --from=configmap/parksmap-config
+oc set env dc/mlbparks --from=configmap/mlbparks-config -n $DEV_PROJECT
+oc set env dc/nationalparks --from=configmap/nationalparks-config -n $DEV_PROJECT
+oc set env dc/parksmap --from=configmap/parksmap-config -n $DEV_PROJECT
 
 echo "Creating services.."
 oc expose dc/mlbparks  --port 8080 -n $DEV_PROJECT
