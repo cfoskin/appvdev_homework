@@ -52,7 +52,9 @@ check_if_ready "2"
 echo "Mongodb Deployment complete"
 # # Code to set up the parks production project. It will need a StatefulSet MongoDB, and two applications each (Blue/Green) for NationalParks, MLBParks and Parksmap.
 # # The Green services/routes need to be active initially to guarantee a successful grading pipeline run.
-
+echo "sleeping for 5 minutes to allow dev project creation first"
+sleep 300 
+echo "Starting the prod project setup now..."
 echo "Creating Blue Deployment Configs.."
 oc new-app $DEV_PROJECT/mlbparks:0.0 --name=mlbparks-blue --allow-missing-imagestream-tags=true -n $PROD_PROJECT
 oc new-app $DEV_PROJECT/nationalparks:0.0 --name=nationalparks-blue --allow-missing-imagestream-tags=true -n $PROD_PROJECT
