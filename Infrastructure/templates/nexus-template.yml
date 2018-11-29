@@ -65,7 +65,7 @@ objects:
               memory: 2Gi
               cpu: 1
             requests:
-              cpu: 500m
+              cpu: 1
               memory: 1Gi
           terminationMessagePath: /dev/termination-log
           volumeMounts:

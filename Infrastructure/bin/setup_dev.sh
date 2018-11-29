@@ -45,6 +45,10 @@ oc new-app $DEV_PROJECT/mlbparks:0.0-0 --name=mlbparks --allow-missing-imagestre
 oc new-app $DEV_PROJECT/nationalparks:0.0-0 --name=nationalparks --allow-missing-imagestream-tags=true -n $DEV_PROJECT
 oc new-app $DEV_PROJECT/parksmap:0.0-0 --name=parksmap --allow-missing-imagestream-tags=true -n $DEV_PROJECT
 
+oc set resources deployment mlbparks  --limits=cpu=100m -n $DEV_PROJECT
+oc set resources deployment nationalparks  --limits=cpu=100m -n $DEV_PROJECT
+oc set resources deployment mlbparks  --limits=cpu=100m -n $DEV_PROJECT
+
 echo "Setting triggers.."
 oc set triggers dc/mlbparks --remove-all -n $DEV_PROJECT
 oc set triggers dc/nationalparks --remove-all -n $DEV_PROJECT

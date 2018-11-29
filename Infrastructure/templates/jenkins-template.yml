@@ -33,7 +33,7 @@ objects:
     - ReadWriteOnce
     resources:
       requests:
-        cpu: 2
+        cpu: 1
         memory: 2Gi
         storage: "4Gi"
 - apiVersion: v1

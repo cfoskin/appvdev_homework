@@ -60,6 +60,10 @@ oc new-app $DEV_PROJECT/mlbparks:0.0 --name=mlbparks-blue --allow-missing-images
 oc new-app $DEV_PROJECT/nationalparks:0.0 --name=nationalparks-blue --allow-missing-imagestream-tags=true -n $PROD_PROJECT
 oc new-app $DEV_PROJECT/parksmap:0.0 --name=parksmap-blue --allow-missing-imagestream-tags=true -n $PROD_PROJECT
 
+oc set resources deployment mlbparks-blue  --limits=cpu=100m -n $PROD_PROJECT
+oc set resources deployment nationalparks-blue  --limits=cpu=100m -n $PROD_PROJECT
+oc set resources deployment mlbparks-blue  --limits=cpu=100m -n $PROD_PROJECT
+
 echo "Setting Blue triggers.."
 oc set triggers dc/mlbparks-blue --remove-all -n $PROD_PROJECT
 oc set triggers dc/nationalparks-blue --remove-all -n $PROD_PROJECT
@@ -69,6 +73,10 @@ echo "Creating Green Deployment Configs.."
 oc new-app $DEV_PROJECT/mlbparks:0.0 --name=mlbparks-green --allow-missing-imagestream-tags=true -n $PROD_PROJECT
 oc new-app $DEV_PROJECT/nationalparks:0.0 --name=nationalparks-green --allow-missing-imagestream-tags=true -n $PROD_PROJECT
 oc new-app $DEV_PROJECT/parksmap:0.0 --name=parksmap-green --allow-missing-imagestream-tags=true -n $PROD_PROJECT
+
+oc set resources deployment mlbparks-green  --limits=cpu=100m -n $PROD_PROJECT
+oc set resources deployment nationalparks-green  --limits=cpu=100m -n $PROD_PROJECT
+oc set resources deployment mlbparks-green  --limits=cpu=100m -n $PROD_PROJECT
 
 echo "Setting Green triggers.."
 oc set triggers dc/mlbparks-green --remove-all -n $PROD_PROJECT
