@@ -59,17 +59,17 @@ echo "Create Configmaps.."
 oc create configmap mlbparks-config --from-literal="DB_HOST=mongodb " --from-literal="DB_PORT=27017" \
  --from-literal="DB_USERNAME=mongodb" --from-literal="DB_PASSWORD=mongodb" \
  --from-literal="DB_NAME=parks" --from-literal="DB_REPLICASET=rs0" \
- --from-literal="APPNAME=MLB Parks (Green)" -n $DEV_PROJECT
+ --from-literal="APPNAME=MLB Parks (Dev)" -n $DEV_PROJECT
 
 oc create configmap nationalparks-config --from-literal="DB_HOST=mongodb " --from-literal="DB_PORT=27017" \
  --from-literal="DB_USERNAME=mongodb" --from-literal="DB_PASSWORD=mongodb" \
  --from-literal="DB_NAME=parks" --from-literal="DB_REPLICASET=rs0" \
- --from-literal="APPNAME=National Parks (Green)" -n $DEV_PROJECT
+ --from-literal="APPNAME=National Parks (Dev)" -n $DEV_PROJECT
 
 oc create configmap parksmap-config --from-literal="DB_HOST=mongodb " --from-literal="DB_PORT=27017" \
  --from-literal="DB_USERNAME=mongodb" --from-literal="DB_PASSWORD=mongodb" \
  --from-literal="DB_NAME=parks" --from-literal="DB_REPLICASET=rs0" \
- --from-literal="APPNAME=ParksMap (Green)" -n $DEV_PROJECT
+ --from-literal="APPNAME=ParksMap (Dev)" -n $DEV_PROJECT
 
 echo "Update the DeploymentConfig to use the configmaps.. "
 oc set env dc/mlbparks --from=configmap/mlbparks-config -n $DEV_PROJECT
