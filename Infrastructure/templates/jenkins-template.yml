@@ -98,7 +98,7 @@ objects:
           resources:
             limits:
               memory: 2Gi
-              cpu: 3
+              cpu: 2
           securityContext:
             capabilities: {}
             privileged: false
