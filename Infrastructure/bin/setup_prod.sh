@@ -148,4 +148,6 @@ oc expose svc/mlbparks-blue --name mlbparks -n $PROD_PROJECT
 oc expose svc/nationalparks-blue --name nationalparks -n $PROD_PROJECT  
 oc expose svc/parksmap-blue --name parksmap -n $PROD_PROJECT 
 
+sleep 120
+
 echo "Finished Setting up Production Apps!"
