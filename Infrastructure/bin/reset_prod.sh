@@ -19,8 +19,9 @@ echo "Resetting Parks Production Environment in project ${GUID}-parks-prod to Gr
 
 # To be Implemented by Student
 oc project ${GUID}-parks-prod 
-oc patch route mlbparks -p \'{"spec":{"to":{"name":"' + \"mlbparks-blue\" + '"}}}\'
-oc patch route nationalparks -p \'{"spec":{"to":{"name":"' + \"nationalparks-blue\" + '"}}}\'
-oc patch route parksmap -p \'{"spec":{"to":{"name":"' + \"parksmap-blue\" + '"}}}\'
+
+oc patch route/mlbparks -p '{"spec":{"to":{"name":"mlbparks-green"}}}' -n $GUID-parks-prod 
+oc patch route/nationalparks -p '{"spec":{"to":{"name":"nationalparks-green"}}}' -n $GUID-parks-prod 
+oc patch route/parksmap   -p '{"spec":{"to":{"name":"parksmap-green"}}}' -n $GUID-parks-prod 
 
 echo "Routes all reset to green"
