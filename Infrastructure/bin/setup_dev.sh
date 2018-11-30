@@ -26,6 +26,7 @@ oc process -f ./Infrastructure/templates/mongodb-single-template.yml | oc create
 
 
 while : ; do
+  echo "^^^^^^^^^" ${DEV_PROJECT}
   oc project ${DEV_PROJECT}
   echo "Checking if Mongodb is Ready..."
   output=$(oc get pods --field-selector=status.phase='Running' | grep 'mongodb' | grep -v 'deploy' | grep '1/1' | awk '{print $2}')
