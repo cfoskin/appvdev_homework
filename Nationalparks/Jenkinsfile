@@ -1,5 +1,5 @@
  node('maven-appdev') {
-    GUID='286a'
+    GUID='38df'
     CLUSTER='https://master.na39.openshift.opentlc.com'
     echo "GUID: ${GUID}"
     echo "CLUSTER: ${CLUSTER}"
@@ -46,7 +46,7 @@
         // Start Binary Build in OpenShift using the file we just published
         sh "oc start-build nationalparks --follow --from-file=./target/nationalparks.jar -n $GUID-parks-dev"
         // Tag the image using the devTag
-        openshiftTag alias: 'false', destStream: 'nationalparks', destTag: devTag, destinationNamespace: '286a-parks-dev', namespace: '286a-parks-dev', srcStream: 'nationalparks', srcTag: 'latest', verbose: 'false'
+        openshiftTag alias: 'false', destStream: 'nationalparks', destTag: devTag, destinationNamespace: '38df-parks-dev', namespace: '38df-parks-dev', srcStream: 'nationalparks', srcTag: 'latest', verbose: 'false'
       }
 
       stage('Publish to Nexus') {
@@ -62,9 +62,9 @@
         sh "oc set image dc/nationalparks nationalparks=docker-registry.default.svc:5000/${GUID}-parks-dev/nationalparks:${devTag} -n ${GUID}-parks-dev"
 
         // Deploy the development application.
-        openshiftDeploy depCfg: 'nationalparks', namespace: '286a-parks-dev', verbose: 'false', waitTime: '', waitUnit: 'sec'
-        openshiftVerifyDeployment depCfg: 'nationalparks', namespace: '286a-parks-dev', replicaCount: '1', verbose: 'false', verifyReplicaCount: 'false', waitTime: '', waitUnit: 'sec'
-        openshiftVerifyService namespace: '286a-parks-dev', svcName: 'nationalparks', verbose: 'false'
+        openshiftDeploy depCfg: 'nationalparks', namespace: '38df-parks-dev', verbose: 'false', waitTime: '', waitUnit: 'sec'
+        openshiftVerifyDeployment depCfg: 'nationalparks', namespace: '38df-parks-dev', replicaCount: '1', verbose: 'false', verifyReplicaCount: 'false', waitTime: '', waitUnit: 'sec'
+        openshiftVerifyService namespace: '38df-parks-dev', svcName: 'nationalparks', verbose: 'false'
       }
       // Run Integration Tests in the Development Environment.
       stage('Integration Tests') {
@@ -73,11 +73,11 @@
 
         //check health endpoint
         echo "Checking health endpoint"
-        sh "curl -i -H 'Content-Length: 0' -X GET http://nationalparks.286a-parks-dev.svc:8080/ws/healthz/"
+        sh "curl -i -H 'Content-Length: 0' -X GET http://nationalparks.38df-parks-dev.svc:8080/ws/healthz/"
 
         // checking info endpoint
         echo "Checking info endpoint"
-        sh "curl -i -H 'Content-Length: 0' -X GET http://nationalparks.286a-parks-dev.svc:8080/ws/info/"
+        sh "curl -i -H 'Content-Length: 0' -X GET http://nationalparks.38df-parks-dev.svc:8080/ws/info/"
       }
 
       // Copy Image to Nexus Docker Registry
@@ -86,7 +86,7 @@
         sh "skopeo copy --src-tls-verify=false --dest-tls-verify=false --src-creds openshift:\$(oc whoami -t) --dest-creds admin:admin123 docker://docker-registry.default.svc.cluster.local:5000/${GUID}-parks-dev/nationalparks:${devTag} docker://nexus-registry.${GUID}-nexus.svc.cluster.local:5000/nationalparks:${devTag}"
 
         // Tag the built image with the production tag.
-        openshiftTag alias: 'false', destStream: 'nationalparks', destTag: prodTag, destinationNamespace: '286a-parks-dev', namespace: '286a-parks-dev', srcStream: 'nationalparks', srcTag: devTag, verbose: 'false'
+        openshiftTag alias: 'false', destStream: 'nationalparks', destTag: prodTag, destinationNamespace: '38df-parks-dev', namespace: '38df-parks-dev', srcStream: 'nationalparks', srcTag: devTag, verbose: 'false'
       }
 
       // Blue/Green Deployment into Production
@@ -107,9 +107,9 @@
         sh "oc set image dc/${destApp} ${destApp}=docker-registry.default.svc:5000/${GUID}-parks-dev/nationalparks:${prodTag} -n ${GUID}-parks-prod"
 
         // Deploy the inactive application.
-        openshiftDeploy depCfg: destApp, namespace: '286a-parks-prod', verbose: 'false', waitTime: '', waitUnit: 'sec'
-        openshiftVerifyDeployment depCfg: destApp, namespace: '286a-parks-prod', replicaCount: '1', verbose: 'false', verifyReplicaCount: 'true', waitTime: '', waitUnit: 'sec'
-        openshiftVerifyService namespace: '286a-parks-prod', svcName: destApp, verbose: 'false'
+        openshiftDeploy depCfg: destApp, namespace: '38df-parks-prod', verbose: 'false', waitTime: '', waitUnit: 'sec'
+        openshiftVerifyDeployment depCfg: destApp, namespace: '38df-parks-prod', replicaCount: '1', verbose: 'false', verifyReplicaCount: 'true', waitTime: '', waitUnit: 'sec'
+        openshiftVerifyService namespace: '38df-parks-prod', svcName: destApp, verbose: 'false'
       }
 
       stage('Switch over to new Version') {
